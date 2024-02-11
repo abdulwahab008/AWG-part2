@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #1a1a2e;
+      color: #ecf0f1;
+      transition: background-color 0.5s ease;
+    }
+    
+    .navbar {
+      background-color: #30475e;
+      color: #ecf0f1;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 100px; 
+      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+    
+    .navbar .logo {
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      font-size: x-large;
+    }
+    
+    .navbar .logo img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 10px;
+    }
+    
+    .user-section {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    
+    .user-section .user-picture {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-image: url('pictures/user.png'); 
+      background-size: cover;
+      background-position: center;
+      margin-right: 10px;
+    }
+    
+    .user-section .user-name {
+      font-size: 14px;
+      font-weight: bold;
+    }
+    
+    .small-navbar {
+      background-color: #2c3e50;
+      color: #ecf0f1;
+      position: absolute;
+      top: 70px;
+      right: 10px;
+      padding: 10px;
+      display: none;
+      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .small-navbar ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .small-navbar ul li {
+      margin-bottom: 5px;
+    }
+    
+    .small-navbar ul li a {
+      color: #ecf0f1;
+      text-decoration: none;
+    }
+    
+    .user-section.active .small-navbar {
+      display: block;
+    }
+    
+    .content {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 20px;
+    }
+    
+    .module {
+      background-color: #30475e;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .module:hover {
+      background-color: #ef8354;
+      transform: translateY(-5px);
+    }
+    
+    .module img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+    
+    .module h2 a{
+      text-decoration: none;
+      margin-bottom: 10px;
+      margin-top: 5px;
+      text-align: center;
+      color: #ecf0f1;
+    }
+    
+    .footer {
+      background-color: #34495e;
+      color: #ecf0f1;
+      padding: 19px;
+      text-align: center;
+      margin-top: 20px;
+      box-shadow: 0px -5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .footer p {
+      margin: 5px 0;
+    }
+    
+    .footer .contact-details {
+      display: flex;
+      justify-content: center;
+    }
+    
+    .footer .contact-details div {
+      margin: 0 10px;
+    }
+   
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="logo">
+      <img src="pictures/logo.png" alt="Mr.Mobile Logo">
+      Mobile Shop management System
+    </div>
+    <div class="user-section">
+      <div class="user-picture"></div>
+      <div class="user-name" id="username-display"></div>
+      <div class="small-navbar">
+        <ul>
+          <li><a href="#" id="edit-picture">Edit Picture</a></li>
+          <li><a href="./settings.html" id="settings">Profile</a></li>
+          <li><a href="./changepassword.html">Change Password</a></li>
+          <li><a href="#" id="logout">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="content">
+    <div class="module">
+        <h2><a href="./sales-main.html"> <img src="pictures/sales.png" alt="Sales"><br>Sales/Inventory</a></h2>
+    </div>
+    
+    <div class="module">
+      <h2><a href="./customer-list.html">  <img src="pictures/loan.png" alt="loan"><br>Loan</a></h2>
+    </div>
+    
+    <div class="module">
+      <h2><a href="./commission.html">  <img src="pictures/commission.png" alt="commission"><br>Daily Commission</a></h2>
+    </div>
+    
+    <div class="module">
+      <h2><a href="./daily-closing.html">  <img src="pictures/closing.png" alt="closing"><br>Daily closing</a></h2>
+    </div>
+    <div class="module">
+      <h2><a href="./reports.html">  <img src="pictures/report.png" alt="closing"><br>Reports</a></h2>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <p>&copy; AWG International. All rights reserved.</p>
+    <div class="contact-details">
+      <div>
+        <p>Islamabad, Pakistan</p>
+        <p>Phone: +92 3301234567</p>
+        <p>Email: info@AWG International.com</p>
+      </div>
+    </div>
+  </div>
+
+  <input type="file" id="picture-upload" style="display: none;">
+
+  <script src="./scripts/dashboardScript.js">
+    
+  </script>
+</body>
+</html>

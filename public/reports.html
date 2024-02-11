@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mobile Shop Management System - Report Generation</title>
+  <style>
+    body {
+      background: linear-gradient(to right,#1a1a2e,#1a1a2e);
+      color: #ffffff;
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      align-items: center;
+      margin: 0;
+    }
+
+    .container {
+      background-color: linear-gradient(to right, #1a1a2e, #1a1a2e);
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      width: 1500px;
+      text-align: center;
+      animation: slideIn 1s;
+    }
+
+    h1 {
+      text-align: center;
+      color: #ef8354;
+      margin-bottom: 20px;
+    }
+
+    .report-options {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #ccc;
+    }
+
+    select {
+      width: 50%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      background-color: #222b3e;
+      color: #fff;
+      font-size: 16px;
+    }
+    input {
+        width: 50%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        background-color: #222b3e;
+        color: #fff;
+        font-size: 16px;
+      }
+
+    button {
+      background-color: #ef8354;
+      color: #ecf0f1;
+      border: none;
+      font-size: 16px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #ef8354;
+    }
+
+    #report-output {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      background-color: #30475e;
+      color: #fff;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th{
+        color:#ecf0f1;
+        background-color: #ef8354;
+      }
+  
+      th, td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+      }
+      
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Report Generation</h1>
+
+    <div class="report-options">
+      <label for="report-type">Select Report Type:</label>
+      <select id="report-type">
+        <option value="sales">Sales Report</option>
+        <option value="stock">Stock Report</option>
+        <option value="commission">Daily Commission Report</option>
+        <option value="closing">Daily Closing Report</option>
+        <option value="giveloan">Give Loan Report</option>
+        <option value="receiveloan">Receive Loan Report</option>
+
+      </select>
+      <label for="from-date">From:</label>
+      <input type="date" id="from-date">
+      <label for="to-date">To:</label>
+      <input type="date" id="to-date"><br>
+      <button id="GenerateReport">Generate Report</button>
+      <button id="back-button">Back</button>
+    </div>
+
+    <div id="report-output"></div>
+    
+  </div>
+
+  <script src="./scripts/reportScript.js">
+  
+  </script>
+</body>
+
+</html>

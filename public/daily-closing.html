@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Closing App</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #1a1a2e;
+            color: #fff;
+            margin: 0;
+           
+            flex-direction: column;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+      
+
+        h1 {
+            color: #ef8354;
+            margin-bottom: 20px;
+        }
+
+        form {
+            width: 400px;
+            padding: 20px;
+            background-color: #30475e;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 0.8s ease-out;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #f9f9f9;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #222b3e;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            background-color: #ef8354;
+            color: #fff;
+            padding: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 18px;
+        }
+
+        button:hover {
+            background-color: #d8572a;
+        }
+
+        table {
+            width: 400px;
+            border-collapse: collapse;
+            background-color: #30475e;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        th,
+        td {
+            border: 1px solid #47597e;
+            padding: 14px;
+            text-align: left;
+            color: #f9f9f9;
+            font-size: 16px;
+        }
+
+        th {
+            background-color: #ef8354;
+        }
+
+        #totalValue {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #47597e;
+            border-radius: 10px;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #back-button {
+            padding: 10px 20px;
+            background-color: #ef8354;
+            margin-top: 10px;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+      
+        #back-button:hover {
+            background-color: #d8572a;
+        }
+
+    </style>
+</head>
+
+<body>
+<div class="container">
+</div>
+    <h1>Daily Closing App</h1>
+
+    <form id="closingForm">
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required>
+
+        <label for="telenorLoad">Telenor Load:</label>
+        <input type="number" id="telenorLoad" name="telenorLoad" required>
+
+        <label for="zongLoad">Zong Load:</label>
+        <input type="number" id="zongLoad" name="zongLoad" required>
+
+        <label for="jazzLoad">Jazz Load:</label>
+        <input type="number" id="jazzLoad" name="jazzLoad" required>
+
+        <label for="ufoneLoad">Ufone Load:</label>
+        <input type="number" id="ufoneLoad" name="ufoneLoad" required>
+
+        <label for="easypaisa">Easypaisa:</label>
+        <input type="number" id="easypaisa" name="easypaisa" required>
+
+        <label for="jazzCash">JazzCash:</label>
+        <input type="number" id="jazzCash" name="jazzCash" required>
+        <div id="totalLoanContainer">
+            <label for="loan">Loan:</label>
+            <input type="number" id="loan" name="loan" value="0" readonly>
+         
+        </div>
+
+        <label for="cash">Cash:</label>
+        <input type="number" id="cash" name="cash" required>
+
+        <label for="bank">Bank:</label>
+        <input type="number" id="bank" name="bank" required>
+
+        <label for="credit">Credit:</label>
+        <input type="number" id="credit" name="credit" required>
+
+        <button type="submit" id="submit">Submit</button>
+    </form>
+    <div id="closingTableContainer">
+        <table id="closingTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Telenor Load</th>
+                    <th>Zong Load</th>
+                    <th>Jazz Load</th>
+                    <th>Ufone Load</th>
+                    <th>Easypaisa</th>
+                    <th>JazzCash</th>
+                    <th>Loan</th>
+                    <th>Cash</th>
+                    <th>Bank</th>
+                    <th>Credit</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="closingTableBody">
+             
+            </tbody>
+        </table>
+    </div>
+    <button id="back-button">Back</button>
+</div>
+<script src="./scripts/closingScript.js">
+    </script>
+
+</body>
+
+</html>
+   

@@ -1,0 +1,111 @@
+<!-- public/stock-management.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Management - Your Mobile Shop</title>
+  
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #1a1a2e;
+            color: #fff;
+            margin: 0;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        nav {
+            width: 150px; /* Set the width as per your design */
+            height: 100vh; /* Make it full height of the viewport */
+            background-color: #30475e;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px; /* Adjust the padding as needed */
+        }
+
+        nav img {
+            width: 80%; /* Adjust the width of the logo */
+            margin-bottom: 20px; /* Add some space below the logo */
+        }
+
+        nav a {
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            width: 100%; /* Make links full width */
+            box-sizing: border-box; /* Include padding and border in the width */
+        }
+
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        main {
+            margin-left: 150px; /* Adjust margin to prevent content from being covered */
+            padding: 20px; /* Add padding for better readability */
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/dashboard.html"><img src="./download.png" alt="Mobile Shop Logo"></a>
+
+    <a hreft="/sales-main.html">Dashboard</a>
+    <a href="./sales.html">sales</a>
+    <a href="./inventory.html">Inventory</a>
+    <a href="./supplier-list.html">Supplier List</a>
+    <a href="./category-list.html">Category List</a>
+    <a href="./products.html">Product List</a>
+</nav>
+
+<main>
+    <iframe id="salesIframe" src="./sales.html" style="display: none;"></iframe>
+    <div>
+        <!-- Your app content goes here -->
+    </div>
+    <div>
+        <p>Total Sales:</p>
+        <span id="totalSalesValue">2670
+        </span>
+    </div>
+</main>
+
+
+<script>
+    async function fetchTotalSales() {
+        try {
+            console.log('Fetching totalSales...');
+            const salesIframe = document.getElementById('salesIframe');
+    
+            // Wait for the sales.html content to be loaded or updated
+            await new Promise(resolve => {
+                salesIframe.addEventListener('load', resolve);
+            });
+    
+            // Access getTotalSales directly from sales.html
+            const totalSales = salesIframe.contentWindow.getTotalSales();
+    
+            console.log('Fetched totalSales:', totalSales);
+    
+            // Render the totalSales value in your sales-main.html
+            document.getElementById('totalSalesValue').textContent = totalSales.toFixed(2);
+        } catch (error) {
+            console.error('Error fetching totalSales:', error);
+        }
+    }
+    
+    // Fetch totalSales when the DOM content is loaded
+    document.addEventListener('DOMContentLoaded', fetchTotalSales);
+    
+</script>
+
+</body>
+</html>

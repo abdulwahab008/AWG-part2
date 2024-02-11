@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
+    <title>Customer Information Form</title>
+   
+    <style>
+        body {
+            background: linear-gradient(to right, #1a1a2e, #1a1a2e);
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          
+            margin: 0;
+        }
+    
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    
+        .form-container,
+        .table-container {
+            background-color: #30475e;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            width: 600px;
+            text-align: center;
+            animation: slideIn 1s;
+            margin-bottom: 20px; /* Added margin between form and table */
+        }
+    
+        h2 {
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+    
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+    
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #ffffff;
+        }
+    
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ffffff;
+            border-radius: 5px;
+            background-color: #222b3e;
+            color: #ffffff;
+        }
+    
+        button {
+            background-color: #e67e22;
+            color: #ffffff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+    
+        button:hover {
+            background-color: #d35400;
+        }
+    
+        p {
+            margin-top: 10px;
+            color: #ffffff;
+        }
+    
+        a {
+            color: #f39c12;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+    
+        a:hover {
+            color: #f39c12;
+        }
+    
+        .error-message {
+            color: #e74c3c;
+            margin-top: 10px;
+        }
+    
+        .username-error {
+            color: #e74c3c;
+        }
+    
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #ffffff;
+            background-color: #30475e;
+            border-radius: 10px;
+            box-shadow: 0 0 20px #30475e;
+        }
+    
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+    
+        th {
+            background-color: #e67e22;
+            color: white;
+        }
+    
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background-color: #30475e;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+    
+        .navbar img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+        }
+    
+        .navbar a {
+            color: #ffffff;
+            text-decoration: none;
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
+        }
+    
+        .navbar a:hover {
+            color: #e74c3c;
+        }
+        #searchSection {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        #searchInput {
+            width: 70%;
+            padding: 10px;
+            margin-right: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ffffff;
+            border-radius: 5px;
+            background-color: #222b3e;
+            color: #ffffff;
+        }
+
+        #searchButton {
+            background-color: #ef8354;
+            color: #ffffff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        #searchButton:hover {
+            background-color: #d35400;
+        }
+    </style>
+    
+    
+    
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <a href="dashboard.html"><img src="./download.png" alt="User Photo"></a>
+            <a href="./give-loan.html">Give Loan</a>
+            <a href="./receive-loan.html">Receive Loan</a>
+            <a href="./customer-list.html">Customer List</a>
+        </div>
+        <div class="form-container">
+        <h2>Customer Information Form</h2>
+        <form action="/customers/add" method="post" id="customerForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address">
+
+            <label for="cnic">CNIC:</label>
+<input type="text" id="cnic" name="cnic" required pattern="[0-9]{13}" title="Please enter a valid 13-digit CNIC" placeholder="e.g 3730312345678">
+
+
+<label for="phone">Phone Number:</label>
+<input type="text" id="phone" name="phone" pattern="[0-9]{11}" title="Please enter a valid 11-digit phone number" placeholder="e.g 03331234567" required>
+
+
+            <button type="submit">Submit</button>
+        </form>
+        </div>
+        <div id="searchSection">
+            <input type="text" id="searchInput" placeholder="Search...">
+            <button id="searchButton">Search</button>
+        </div>
+        <div class="table-container">
+    <h2>Customer Table</h2>
+    <table id="customerTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>CNIC</th>
+                <th>Phone Number</th>
+            </tr>
+        </thead>
+        <tbody id ="loanTableBody">
+            <!-- Customer data will be dynamically populated here -->
+        </tbody>
+    </table>
+        </div>
+       
+</div>
+    <script src="./scripts/customerScript.js">
+       
+        
+
+</script>
+</body>
+</html>

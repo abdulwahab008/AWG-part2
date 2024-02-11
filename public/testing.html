@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #1a1a2e;
+            color: #fff;
+            margin: 0;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        
+    }
+
+    h1 {
+        color: #ef8354;
+    }
+
+    form {
+            
+        width: 800px;
+        max-width: 100%;
+        padding: 20px;
+        background-color: #30475e;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        animation: fadeInUp 0.8s ease-out;
+        margin-bottom: 20px;
+    }
+
+        label {
+            font-weight: bold;
+            color: #e1dede;
+        }
+
+        input,
+        textarea,
+        select,
+        button {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #222b3e;
+            color: #fff;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            width: 100%;
+            background-color: #ef8354;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #d8572a;
+        }
+
+        #productList {
+            margin-top: 20px;
+        }
+
+        #productList table {
+            width: 100%;
+            max-width: 800px;
+            border-collapse: collapse;
+            background-color: #30475e;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        #productList th, #productList td {
+            border: 1px solid #47597e;
+            padding: 14px;
+            text-align: left;
+            color: #f9f9f9;
+            font-size: 16px;
+        }
+
+        #productList th {
+            background-color: #ef8354;
+        }
+        nav {
+            width: 150px;
+            height: 100vh;
+            background-color: #30475e;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+        }
+
+        nav img {
+            width: 80%;
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        #searchSection {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        #searchInput {
+            width: 70%;
+            padding: 10px;
+            margin-right: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ffffff;
+            border-radius: 5px;
+            background-color: #30475e;
+            color: #ffffff;
+        }
+
+        #searchButton {
+            background-color: #ef8354;
+            color: #ffffff;
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        #searchButton:hover {
+            background-color: #d35400;
+        }
+    </style>
+    <title>Product List App</title>
+</head>
+<body>
+    <nav>
+        <a href="/dashboard.html"><img src="./download.png" alt="Mobile Shop Logo"></a>
+        <a href="/sales-main.html">Dashboard</a>
+        <a href="/sales.html">Sales</a>
+        <a href="/inventory.html">Inventory</a>
+        <a href="/supplier-list.html">Supplier List</a>
+        <a href="/category-list.html">Category List</a>
+        <a href="/products.html">Product List</a>
+    </nav>
+    <div class="container">
+        <h1>Create a New Product</h1>
+        <form id="productForm">
+            <input type="hidden" id="sku">
+            <label for="category">Category:</label>
+            <select id="category" required>
+                <!-- Categories will be dynamically added here -->
+            </select>
+
+            <label for="productName">Product Name:</label>
+            <input type="text" id="productName" required>
+
+            <label for="description">Description:</label>
+            <textarea id="description" required></textarea>
+
+            <label for="price">Price:</label>
+            <input type="number" id="price" step="0.01" required>
+            <label for="cost">Cost:</label>
+    <input type="number" id="cost" step="0.01" required>
+
+            <button type="button" id="saveButton" onclick="createProduct()">Save</button>
+            <div id="message"></div>
+        </form>
+        <div id="searchSection">
+            <input type="text" id="searchInput" placeholder="Search...">
+            <button id="searchButton" onclick="searchAndHighlight()">Search</button>
+        </div>
+        <div id="productList">
+            <h2>Product List</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Category</th>
+                        <th>Product Name</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="productTableBody">
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+   
+
+    <script>
+        // Function to save a new product
+        async function createProduct() {
+            const messageElement = document.getElementById('message');
+            messageElement.innerHTML = ''; // Clear previous messages
+    
+            try {
+                const categoryNameSelect = document.getElementById('category');
+                const categoryName = categoryNameSelect.options[categoryNameSelect.selectedIndex].text;
+                
+                const productName = document.getElementById('productName').value;
+                const description = document.getElementById('description').value;
+                const price = document.getElementById('price').value;
+                const cost = document.getElementById('cost').value;
+    
+                // Validate input (you may add more validation)
+                if (!categoryName || !productName || !description || !price || !cost) {
+                    showMessage('Please fill in all fields.', 'error');
+                    return;
+                }
+    
+                const response = await fetch('/api/products', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        categoryName,
+                        productName,
+                        description,
+                        price,
+                        cost
+                    }),
+                });
+    
+                if (response.ok) {
+                    showMessage('Product saved successfully!', 'success');
+                    fetchAndDisplayProducts(); // Refresh the product list
+                    setTimeout(( )=>{
+                        location.reload();
+                    } ,2000)
+                } else {
+                    showMessage('Failed to save product. Please try again.', 'error');
+                }
+            } catch (error) {
+                console.error('Error saving product:', error);
+                showMessage('An error occurred. Please try again later.', 'error');
+            }
+        }
+    
+        // Function to display messages
+        function showMessage(message, type) {
+            const messageElement = document.getElementById('message');
+            messageElement.innerHTML = `<p class="${type}">${message}</p>`;
+        }
+    
+        // Function to fetch and display products
+        async function fetchAndDisplayProducts() {
+            try {
+                const response = await fetch('/api/products');
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch products. Status: ${response.status}`);
+                }
+    
+                const products = await response.json();
+    
+                // Clear existing table rows
+                const tableBody = document.getElementById('productTableBody');
+                tableBody.innerHTML = '';
+    
+                // Populate the table with product data
+                products.forEach(product => {
+                    const row = tableBody.insertRow();
+                    row.insertCell(0).innerText = product.sku;
+                    row.insertCell(1).innerText = product.categoryName;
+                    row.insertCell(2).innerText = product.productName;
+                    row.insertCell(3).innerText = product.description;
+                    row.insertCell(4).innerText = product.price;
+                });
+    
+                // Reset the form after displaying products
+                document.getElementById('productForm').reset();
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                showMessage('Failed to fetch products. Please try again.', 'error');
+            }
+        }
+    
+        // Fetch and display products when the page is loaded
+        document.addEventListener('DOMContentLoaded', async function () {
+            const categorySelect = document.getElementById('category');
+    
+            try {
+                // Fetch categories from the server and populate the dropdown
+                const response = await fetch('/categories');
+                const categories = await response.json();
+    
+                categories.forEach(function (category) {
+                    const option = document.createElement('option');
+                    option.value = category.name;
+                    option.text = category.name;
+                    categorySelect.add(option);
+                });
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+                showMessage('Failed to fetch categories. Please try again.', 'error');
+            }
+    
+            // Fetch and display products when the page is loaded
+            fetchAndDisplayProducts();
+        });
+    
+        function goBack() {
+            window.history.back();
+        }
+        function searchAndHighlight() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const tableRows = document.querySelectorAll('#productTableBody tr');
+            let found = false;
+            tableRows.forEach(row => {
+                const rowContent = row.textContent.toLowerCase();
+                if (rowContent.includes(searchTerm)) {
+                    // Highlight the entire row or specific cells as needed
+                    row.style.backgroundColor = '#d35400';
+                    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    found = true; 
+                } else {
+                    row.style.backgroundColor = ''; // Reset background color
+                }
+            });
+            if (!found) {
+                alert('Term not found!');
+            }
+        }
+    </script>
+
+<script>// src/controllers/productController.js
+
+    const Product = require('../models/product');
+    const { v4: uuidv4 } = require('uuid');
+    exports.getAllProducts = async (req, res) => {
+        try {
+            const products = await Product.getAllProducts();
+            res.json(products);
+        } catch (error) {
+            console.error('Error fetching products:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    };
+    
+    exports.createProduct = async (req, res) => {
+        try {
+            const { categoryName, productName, description, price, cost } = req.body;
+    
+            if (!categoryName || !productName || !description || !price || !cost) {
+                return res.status(400).json({ error: 'Please fill in all fields.' });
+            }
+    
+            const sku = generateNumericUuid();
+    
+            const newProduct = await Product.createProduct({
+                sku,
+                category: categoryName,
+                productName,
+                description,
+                price,
+                cost,
+            });
+    
+            res.status(201).json(newProduct);
+        } catch (error) {
+            console.error('Error creating product:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    };
+    
+    
+    exports.getCategories = async (req, res) => {
+        try {
+            const categories = await Product.getCategories();
+            res.json(categories);
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    };
+    
+    function generateNumericUuid() {
+        // Generate a uuid
+        const uuid = uuidv4();
+    
+        // Extract only numeric characters (0-9)
+        const numericUuid = uuid.replace(/[^\d]/g, '');
+    
+        // Take the first 5 characters
+        return numericUuid.substring(0, 5);
+    }</script>
+    <script>
+        const db = require('./db');
+
+async function createProduct({ sku, category, productName, description, price, cost}) {
+    const connection = await db.getConnection();
+    try {
+        await connection.beginTransaction();
+
+    
+
+        const [result] = await connection.execute(
+            'INSERT INTO products (sku, categoryName, productName, description, price, cost) VALUES (?, ?, ?, ?, ?, ?)',
+            [sku, category, productName, description, price,cost]
+        );
+
+        await connection.commit();
+
+        return {
+            id: result.insertId,
+            sku,
+            category,
+            productName,
+            description,
+            price,
+            cost
+           
+        };
+    } catch (error) {
+        console.error('Error creating product:', error);
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
+    }
+}
+
+async function getAllProducts() {
+    const connection = await db.getConnection();
+    try {
+        const [rows] = await connection.execute('SELECT * FROM products');
+        return rows;
+    } finally {
+        connection.release();
+    }
+}
+
+async function getCategories() {
+    const connection = await db.getConnection();
+    try {
+        const [rows] = await connection.execute('SELECT name FROM categories');
+        return rows;
+    } finally {
+        connection.release();
+    }
+}
+
+
+
+module.exports = {
+    createProduct,
+    getAllProducts,
+    getCategories,
+  
+};
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+document.getElementById('date').valueAsDate = new Date();
+    
+function calculateRemainingAmount() {
+    const totalInstallments = parseFloat(document.getElementById('total_installment').value) || 0;
+    const installmentNumber = parseFloat(document.getElementById('installment_number').value) || 0;
+    const installmentAmount = parseFloat(document.getElementById('installment_amount').value) || 0;
+
+    const remainingAmount = (totalInstallments - installmentNumber) * installmentAmount;
+
+    document.getElementById('remaining_amount').value = remainingAmount.toFixed(2);
+}
+
+document.getElementById('installment_number').addEventListener('input', calculateRemainingAmount);
+
+async function toggleInstallmentOption() {
+    var loanType = document.getElementById('loan_type').value;
+    var installmentFields = document.getElementById('installmentFields');
+
+    if (loanType === 'monthly_installment') {
+        const transactionId = document.getElementById('transaction_id').value;
+        try {
+            const response = await fetch('http://localhost:3000/receiveloans/monthly_installment_amount', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ transaction_id: transactionId }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                document.getElementById('installment_amount').value = data.monthly_installment_amount;
+                document.getElementById('total_installment').value = data.installment;
+
+                // Calculate and update remaining amount
+                calculateRemainingAmount();
+
+                installmentFields.style.display = 'block';
+            } else {
+                alert('Failed to fetch monthly installment amount.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while fetching monthly installment amount.');
+        }
+    } else {
+        // If "Full Amount" is selected, reset the values to 0
+        document.getElementById('installment_amount').value = '0';
+        document.getElementById('total_installment').value = '0';
+        document.getElementById('installment_number').value = '0';
+        document.getElementById('remaining_amount').value = '0';
+
+        calculateRemainingAmount();  // Ensure remaining amount is updated
+
+        installmentFields.style.display = 'none';
+    }
+}
+
+async function searchTransaction() {
+    const transactionId = document.getElementById('transaction_id').value;
+
+    try {
+        const response = await fetch('http://localhost:3000/receiveloans/search', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ transaction_id: transactionId }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            document.getElementById('name').value = data.name;
+            document.getElementById('amount').value = data.amount;
+        } else {
+            alert('Loan not found for the given transaction ID');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while searching for the loan.');
+    }
+}
+
+document.getElementById('receiveLoanForm').addEventListener('submit', async function (event) {
+    // Prevent the default form submission behavior
+    event.preventDefault();
+    document.getElementById('date').valueAsDate = new Date();
+    // Get form data using FormData
+    const formData = new FormData(this);
+    const loanType = formData.get('loan_type');
+    if (loanType === 'full_amount') {
+        formData.set('installment_amount', '0');
+        formData.set('total_installment', '0');
+        formData.set("installment_number", '0');
+        formData.set("remaining_amount", '0');
+    }
+    try {
+        // Send a POST request to the server
+        const response = await fetch('http://localhost:3000/receiveloans/submit_loan', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(Object.fromEntries(formData)),
+        });
+
+        // Check if the response is okay (status code 2xx)
+        if (response.ok) {
+            // Parse the JSON response
+            const data = await response.json();
+            console.log('Form submitted successfully:', data);
+
+            // Display success message
+            document.getElementById('successMessage').innerHTML = 'Loan submitted successfully';
+            // Clear the form
+            this.reset();
+            // Fetch and display updated data
+            fetchDataAndDisplay();
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        } else {
+            // Log an error if the response status is not okay
+            console.error('Failed to submit form:', response.statusText);
+        }
+    } catch (error) {
+        // Log an error if an exception occurs during the request
+        console.error('An error occurred during form submission:', error);
+    }
+});
+
+async function fetchDataAndDisplay() {
+    try {
+        const response = await fetch('http://localhost:3000/receiveloans/fetch_all');
+        const data = await response.json();
+
+        if (response.ok) {
+            // Clear existing table rows
+            document.getElementById('loanTableBody').innerHTML = '';
+
+            // Append new rows with fetched data
+            data.forEach(row => {
+                const localDate = new Date(row.date).toLocaleDateString();
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${localDate}</td>
+                    <td>${row.transaction_id}</td>
+                    <td>${row.name}</td>
+                    <td>${row.amount}</td>
+                    <td>${row.loan_type}</td>
+                    <td>${row.installment_number}</td>
+                    <td>${row.remaining_amount}</td>
+                `;
+                document.getElementById('loanTableBody').appendChild(newRow);
+            });
+        } else {
+            console.error('Failed to fetch data:', response.statusText);
+        }
+    } catch (error) {
+        console.error('An error occurred during data fetch:', error);
+    }
+}
+
+window.addEventListener('load', fetchDataAndDisplay);
+function searchAndHighlight() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const tableRows = document.querySelectorAll('#loanTableBody tr');
+    let found = false;
+    tableRows.forEach(row => {
+        const rowContent = row.textContent.toLowerCase();
+        if (rowContent.includes(searchTerm)) {
+            // Highlight the entire row or specific cells as needed
+            row.style.backgroundColor = '#d35400';
+            row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            found = true; 
+        } else {
+            row.style.backgroundColor = ''; // Reset background color
+        }
+    });
+    if (!found) {
+        alert('Term not found!');
+    }
+}

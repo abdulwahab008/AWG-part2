@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Give Loan</title>
+    <style>
+        body {
+            background: linear-gradient(to right, #1a1a2e, #1a1a2e);
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #30475e;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            width: 700px;
+            text-align: center;
+            animation: slideIn 1s;
+        }
+
+        h2 {
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #ffffff;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ffffff;
+            border-radius: 5px;
+            background-color: #222b3e;
+            color: #ffffff;
+        }
+
+        input[type="date"] {
+            appearance: none;
+            padding: 10px;
+        }
+
+        button {
+            background-color: #ef8354;
+            color: #ffffff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #d35400;
+        }
+
+        input[type="submit"] {
+            background-color: #ef8354;
+            color: #ffffff;
+        }
+
+        input[type="submit"]:hover {
+            background-color:  #d8572a;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #ffffff;
+            background-color: #30475e;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #ef8354;
+            color: white;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background-color: #30475e;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+    
+        .navbar img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+        }
+    
+        .navbar a {
+            color: #ffffff;
+            text-decoration: none;
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
+        }
+    
+        .navbar a:hover {
+            color: #e74c3c;
+        }
+        #totalLoanDisplay{
+            color:#ddef54;
+            margin-top: 10px;
+            font-size: larger;
+            margin-bottom: 15px;
+        }
+        #searchSection {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        #searchInput {
+            width: 70%;
+            padding: 10px;
+            margin-right: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ffffff;
+            border-radius: 5px;
+            background-color: #222b3e;
+            color: #ffffff;
+        }
+
+        #searchButton {
+            background-color: #ef8354;
+            color: #ffffff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        #searchButton:hover {
+            background-color: #d35400;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <a href="dashboard.html"><img src="./download.png" alt="User Photo"></a>
+            <a href="./give-loan.html">Give Loan</a>
+            <a href="./receive-loan.html">Receive Loan</a>
+            <a href="./customer-list.html">Customer List</a>
+           
+        </div>
+        <h2>Give Loan Form</h2>
+        <form id="loanForm" action="/giveloans/submit_loan" method="POST">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date">
+        
+            <label for="name">Name:</label>
+            <select id="name" name="name" required></select>
+
+        
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" step="0.01" >
+        
+            <label for="installment">Installment Months:</label>
+            <select id="installment" name="installment">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
+        
+            <label for="monthlyInstallmentAmount">Monthly Installment Amount:</label>
+            <input type="text" id="monthlyInstallmentAmount" name="monthly_installment" readonly>
+        
+            <input type="submit" value="Submit">
+        </form>
+        <div id="successMessage" style="color: rgb(241, 241, 80)"></div>
+        <button id="totalLoan">Total Loan</button>
+        <div id="totalLoanDisplay"></div><hr>
+        <div id="searchSection">
+            <input type="text" id="searchInput" placeholder="Search...">
+            <button id="searchButton">Search</button>
+        </div>
+      
+        <table id="loanTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Transaction ID</th>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    <th>Installment Months</th>
+                    <th>Monthly Installment Amount</th> 
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="loanTableBody">
+                <!-- Data will be dynamically added here -->
+            </tbody>
+        </table>
+      
+    </div>
+
+  
+     <script src="./scripts/giveloanScript.js">
+         
+        </script>
+    </div>
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receive Loan</title>
+    <style>
+        body {
+            background: linear-gradient(to right, #1a1a2e, #1a1a2e);
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #30475e;
+            border-radius: 10px;
+            box-shadow: 0 0 20px #222b3e;
+            padding: 20px;
+            width: 800px;
+            text-align: center;
+            animation: slideIn 1s;
+        }
+
+        h2 {
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #ffffff;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ffffff;
+            border-radius: 5px;
+            background-color: #222b3e;
+            color: #ffffff;
+        }
+
+        input[type="date"] {
+            appearance: none;
+            padding: 10px;
+        }
+
+        button {
+            background-color: #ef8354;
+            color: #ffffff;
+            padding: 9px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #d35400;
+        }
+
+        input[type="submit"] {
+            background-color: #ef8354;
+            color: #ffffff;
+        }
+
+        input[type="submit"]:hover {
+            background-color:  #d8572a;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #ffffff;
+            background-color: #30475e;
+            border-radius: 10px;
+            box-shadow: 0 0 20px #222b3e;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #ef8354;
+            color: white;
+        }
+
+        /* Styling for success message */
+        #successMessage {
+            color: rgb(244, 217, 9);
+            font-size: 18px;
+            background-color: #262626;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background-color: #30475e;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+    
+        .navbar img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+        }
+    
+        .navbar a {
+            color: #ffffff;
+            text-decoration: none;
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
+        }
+    
+        .navbar a:hover {
+            color: #e74c3c;
+        }
+        #searchSection {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        #searchInput {
+            width: 70%;
+            padding: 10px;
+            margin-right: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ffffff;
+            border-radius: 5px;
+            background-color: #222b3e;
+            color: #ffffff;
+        }
+
+        #searchButton {
+            background-color: #ef8354;
+            color: #ffffff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        #searchButton:hover {
+            background-color: #d35400;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <a href="dashboard.html"><img src="./download.png" alt="User Photo"></a>
+            <a href="./give-loan.html">Give Loan</a>
+            <a href="./receive-loan.html">Receive Loan</a>
+            <a href="./customer-list.html">Customer List</a>
+        </div>
+        <h2>Receive Loan</h2>
+        <form id="receiveLoanForm" action="/submit_loan" method="POST">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
+        
+            <label for="transaction_id">Transaction ID:</label>
+            <div style="display: flex;">
+                <input type="text" id="transaction_id" name="transaction_id" required>
+                <button type="button" id="searchButton">Search</button>
+            </div>
+        
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+        
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" step="0.01" required>
+        
+            <label for="loan_type">Loan Type:</label>
+            <select id="loan_type" name="loan_type">
+                <option value="full_amount">Full Amount</option>
+                <option value="monthly_installment">Monthly Installments</option>
+            </select>
+        
+            <div id="installmentFields" style="display: none;">
+                <label for="installment_amount">Monthly Installment Amount:</label>
+                <input type="number" id="installment_amount" name="installment_amount" step="0.01">
+        
+                <label for="total_installment">Total Monthly Installments:</label>
+                <input type="number" id="total_installment" name="total_installment" step="0.01" readonly>
+        
+                <label for="installment_number">Installment Number:</label>
+                <input type="number" id="installment_number" name="installment_number" value="1" required pattern="[1-9]\d*">
+        
+                <label for="remaining_amount">Remaining Amount:</label>
+                <input type="number" id="remaining_amount" name="remaining_amount" step="0.01" readonly>
+            </div>
+        
+            <input type="submit" value="Submit">
+        </form>
+        <div id="successMessage"></div>
+        <div id="searchSectionTable">
+            <input type="text" id="searchInputTable" placeholder="Search...">
+            <button id="searchButtonTable">Search</button>
+        </div>
+        <table id="loanTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Transaction ID</th>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    <th>Loan Type</th>
+                    <th>Installment Number</th>
+                    <th>remaining Amount</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="loanTableBody">
+                <!-- Data will be dynamically added here -->
+            </tbody>
+        </table>
+        <div id="successMessage"></div>
+    </div>
+
+    <script src="./scripts/receiveloanScript.js">
+    
+    </script>
+    
+</body>
+</html>
