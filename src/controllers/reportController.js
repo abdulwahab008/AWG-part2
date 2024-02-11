@@ -2,8 +2,8 @@ const salesModel = require('../models/salesModel');
 const stockModel = require('../models/inventory');
 const commissionModel = require('../models/commissionModel');
 const closingModel = require('../models/closingModel');
-const giveLoanModel = require('../models/giveLoanModel');
-const receiveLoanModel = require('../models/receiveLoanModel');
+const giveLoanModel = require('../models/giveloanModel');
+const receiveLoanModel = require('../models/receiveloanModel');
 async function generateReport(req, res) {
     try {
       const reportType = req.body.reportType;
