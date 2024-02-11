@@ -1,4 +1,4 @@
-const Giveloan = require('../models/giveLoanModel');
+const Giveloan = require('../models/giveloanModel');
 const db = require('../models/db');
 const GiveloanController = {
   submitLoan: async (req, res) => {
