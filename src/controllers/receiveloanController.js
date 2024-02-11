@@ -1,4 +1,4 @@
-const receiveloanModel = require('../models/receiveLoanModel');
+const receiveloanModel = require('../models/receiveloanModel');
 
 
 async function receiveLoan(req, res) {
