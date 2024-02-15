@@ -37,7 +37,7 @@ async function toggleInstallmentOption() {
     if (loanType === 'monthly_installment') {
         const transactionId = document.getElementById('transaction_id').value;
         try {
-            const response = await fetch('http://localhost:3000/receiveloans/monthly_installment_amount', {
+            const response = await fetch('/receiveloans/monthly_installment_amount', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ async function searchTransaction() {
     const transactionId = document.getElementById('transaction_id').value;
 
     try {
-        const response = await fetch('http://localhost:3000/receiveloans/search', {
+        const response = await fetch('/receiveloans/search', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ document.getElementById('receiveLoanForm').addEventListener('submit', async func
     }
     try {
         // Send a POST request to the server
-        const response = await fetch('http://localhost:3000/receiveloans/submit_loan', {
+        const response = await fetch('/receiveloans/submit_loan', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -162,7 +162,7 @@ function attachDeleteButtonEvents() {
 
 async function fetchDataAndDisplay() {
     try {
-        const response = await fetch('http://localhost:3000/receiveloans/fetch_all');
+        const response = await fetch('/receiveloans/fetch_all');
         const data = await response.json();
 
         if (response.ok) {

@@ -434,3 +434,14 @@ function fetchUserData() {
             console.error('Error fetching user information:', error);
         });
 }
+function updateProfileSection(user) {
+    // Update the profile section with user information
+    const profileSection = document.getElementById('profileSection');
+
+    if (profileSection) {
+        profileSection.innerHTML = `
+        <p>Welcome, ${user.firstName} ${user.lastName}!</p>
+        <p>Email: ${user.email}</p>
+        `;
+    }
+}

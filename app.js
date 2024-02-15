@@ -5,7 +5,6 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const session = require('express-session');
 
-
 const productRoutes = require('./src/routes/productRoutes');
 const salesRoutes = require('./src/routes/salesRoutes');
 const supplierRoutes = require('./src/routes/supplierRoutes');

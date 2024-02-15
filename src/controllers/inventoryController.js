@@ -1,4 +1,5 @@
 const Inventory = require('../models/inventory');
+const sales=require('../models/salesModel');
 
 exports.saveToDatabase = async (req, res) => {
     const data = req.body;
@@ -46,22 +47,36 @@ exports.makeSale = async (req, res) => {
     const saleData = req.body;
 
     try {
-        // Check if the quantity being sold is greater than the available quantity in inventory
+        // Fetch the current inventory quantity for the product being sold
         const inventoryData = await Inventory.fetchInventoryData();
         const inventoryItem = inventoryData.find(item => item.productName === saleData.productName);
 
-        if (!inventoryItem || inventoryItem.quantity < saleData.quantity) {
+        if (!inventoryItem) {
+            console.log('Product not found in inventory:', saleData.productName);
+            return res.status(400).send('Product not found in inventory');
+        }
+
+        const availableQuantity = inventoryItem.quantity;
+
+        // Check if the quantity being sold is greater than the available quantity in inventory
+        if (saleData.quantity > availableQuantity) {
+            console.log('Insufficient quantity in inventory for the sale');
             return res.status(400).send('Insufficient quantity in inventory for the sale');
         }
 
+        // Log the sale data before the sale
+        console.log('Sale data before update:', saleData);
+
         // Update inventory quantity after the sale
-        const updatedInventoryQuantity = inventoryItem.quantity - saleData.quantity;
         await Inventory.updateInventoryQuantity(saleData.productName, saleData.quantity);
 
         // Save sale data to the sales table
-        await Sales.saveSalesToDatabase(saleData);
+        await Sales.saveToDatabase(saleData); // Use the correct function based on your implementation
 
+        // Log the sale data after the update
+        console.log('Sale data after update:', saleData);
 
+        console.log('Sale successful');
         res.status(200).send('Sale successful');
     } catch (error) {
         console.error('Error making sale:', error);

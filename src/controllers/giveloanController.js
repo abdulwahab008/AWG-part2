@@ -5,12 +5,12 @@ const GiveloanController = {
     try {
       const { name, amount, installment, monthly_installment, date } = req.body;
 
-      // Validate that 'name' is not null or empty
+ 
       if (!name) {
         return res.status(400).json({ success: false, error: 'Name is required.' });
       }
 
-      // Perform any necessary validation on the other fields before saving
+    
 
       const result = await Giveloan.saveLoan({
         name,
