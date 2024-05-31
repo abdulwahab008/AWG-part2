@@ -18,7 +18,7 @@
     "express-session": "^1.17.3",
     "helmet": "^7.1.0",
     "morgan": "^1.10.0",
-    "mysql2": "^3.6.5",
+    "mysql2": "^3.9.8",
     "nodemailer": "^6.9.9",
     "path": "^0.12.7",
     "uuid": "^9.0.1"
