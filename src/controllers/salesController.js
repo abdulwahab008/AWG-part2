@@ -4,57 +4,97 @@ const Sales = require('../models/salesModel');
 
 exports.fetchCategoryNames = async (req, res) => {
     try {
-        const categoryNames = await Sales.fetchCategoryNames();
+        const categoryNames = await Sales.fetchCategoryNames();  
         res.json(categoryNames);
     } catch (error) {
-        console.error('Error fetching category names:', error);
-        res.status(500).send('Internal Server Error');
+        console.error('Error in fetchCategoryNames controller:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
 exports.fetchProductsByCategory = async (req, res) => {
     try {
-        const categoryName = req.query.categoryName;
-        const products = await Sales.fetchProductsByCategory(categoryName);
+        const { categoryName } = req.params;
+        if (!categoryName) {
+            return res.status(400).json({ error: 'Category name is required' });
+        }
+        const products = await Sales.fetchProductsByCategory(categoryName); 
         res.json(products);
     } catch (error) {
-        console.error('Error fetching products:', error);
-        res.status(500).send('Internal Server Error');
+        console.error('Error in fetchProductsByCategory controller:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
-
-
 
 exports.saveSalesToDatabase = async (req, res) => {
-    console.log('Received a request to save sales data.'); // Add this line
-    const data = req.body;
-
     try {
+        const data = req.body;
+        if (!data || !Array.isArray(data) || data.length === 0) {
+            return res.status(400).json({ error: 'Invalid data format' });
+        }
+
         await Sales.saveSalesToDatabase(data);
-        res.status(200).send('Data saved to the database');
+        res.status(200).send('Data saved successfully');
     } catch (error) {
         console.error('Error saving to database:', error);
-        res.status(500).send('Internal Server Error');
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
+
+
 exports.fetchSalesData = async (req, res) => {
     try {
-        const salesData = await Sales.fetchSalesData();
-        res.json(salesData);
+        const SalesData = await Sales.fetchSalesData();
+        res.json(SalesData);
     } catch (error) {
-        console.error('Error fetching sales data:', error);
+        console.error('Error fetching Sales data:', error);
         res.status(500).send('Internal Server Error');
     }
 };
 
-exports.deleteSalesData = async (req, res) => {
-    const { date, categoryName, productName } = req.body;
+
+
+
+
+exports.deleteSalesItem = async (req, res) => {
+    const id = req.params.id;
+    
+    if (!id || id === 'undefined') {
+        return res.status(400).json({ error: 'Invalid ID provided' });
+    }
 
     try {
-        await Sales.deleteSalesData(date, categoryName, productName);
-        res.status(200).send('Data deleted successfully');
+        await Sales.deleteSalesItemById(id);
+        res.status(200).json({ message: 'Item deleted successfully' });
     } catch (error) {
-        console.error('Error deleting sales data:', error);
-        res.status(500).send('Internal Server Error');
+        console.error('Error deleting item:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+exports.updateSalesItem = async (req, res) => {
+    const id = req.params.id;
+    const data = req.body[0];
+
+    if (!id || id === 'undefined') {
+        return res.status(400).json({ error: 'Invalid ID provided' });
+    }
+
+    try {
+        console.log('Received update data:', data);
+
+        if (!data.sku) {
+            return res.status(400).json({ error: 'SKU cannot be null or empty' });
+        }
+
+        await Sales.updateSalesItem(id, data);
+        res.status(200).json({ message: 'Item updated successfully' });
+    } catch (error) {
+        console.error('Error updating item:', error);
+        res.status(500).json({ 
+            error: 'Internal Server Error',
+            details: error.message 
+        });
     }
 };

@@ -1,5 +1,5 @@
 const Inventory = require('../models/inventory');
-const sales=require('../models/salesModel');
+// const sales = require('../models/salesModel');
 
 exports.saveToDatabase = async (req, res) => {
     const data = req.body;
@@ -13,13 +13,27 @@ exports.saveToDatabase = async (req, res) => {
     }
 };
 
-exports.fetchProductNames = async (req, res) => {
+exports.fetchCategoryNames = async (req, res) => {
     try {
-        const productNames = await Inventory.fetchProductNames();
-        res.json(productNames);
+        const categoryNames = await Inventory.fetchCategoryNames();  // Changed to use Inventory model
+        res.json(categoryNames);
     } catch (error) {
-        console.error('Error fetching product names:', error);
-        res.status(500).send('Internal Server Error');
+        console.error('Error in fetchCategoryNames controller:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+exports.fetchProductsByCategory = async (req, res) => {
+    try {
+        const { categoryName } = req.params;
+        if (!categoryName) {
+            return res.status(400).json({ error: 'Category name is required' });
+        }
+        const products = await Inventory.fetchProductsByCategory(categoryName);  // Changed to use Inventory model
+        res.json(products);
+    } catch (error) {
+        console.error('Error in fetchProductsByCategory controller:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
@@ -47,7 +61,6 @@ exports.makeSale = async (req, res) => {
     const saleData = req.body;
 
     try {
-        // Fetch the current inventory quantity for the product being sold
         const inventoryData = await Inventory.fetchInventoryData();
         const inventoryItem = inventoryData.find(item => item.productName === saleData.productName);
 
@@ -57,29 +70,62 @@ exports.makeSale = async (req, res) => {
         }
 
         const availableQuantity = inventoryItem.quantity;
-
-        // Check if the quantity being sold is greater than the available quantity in inventory
+        
         if (saleData.quantity > availableQuantity) {
             console.log('Insufficient quantity in inventory for the sale');
             return res.status(400).send('Insufficient quantity in inventory for the sale');
         }
 
-        // Log the sale data before the sale
         console.log('Sale data before update:', saleData);
-
-        // Update inventory quantity after the sale
         await Inventory.updateInventoryQuantity(saleData.productName, saleData.quantity);
-
-        // Save sale data to the sales table
-        await Sales.saveToDatabase(saleData); // Use the correct function based on your implementation
-
-        // Log the sale data after the update
+        await sales.saveToDatabase(saleData);  // Changed to lowercase 'sales'
         console.log('Sale data after update:', saleData);
-
         console.log('Sale successful');
         res.status(200).send('Sale successful');
     } catch (error) {
         console.error('Error making sale:', error);
         res.status(500).send('Internal Server Error');
+    }
+};
+
+exports.deleteInventoryItem = async (req, res) => {
+    const id = req.params.id;
+    
+    if (!id || id === 'undefined') {
+        return res.status(400).json({ error: 'Invalid ID provided' });
+    }
+
+    try {
+        await Inventory.deleteInventoryItemById(id);
+        res.status(200).json({ message: 'Item deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting item:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+exports.updateInventoryItem = async (req, res) => {
+    const id = req.params.id;
+    const data = req.body[0];
+
+    if (!id || id === 'undefined') {
+        return res.status(400).json({ error: 'Invalid ID provided' });
+    }
+
+    try {
+        console.log('Received update data:', data);
+
+        if (!data.sku) {
+            return res.status(400).json({ error: 'SKU cannot be null or empty' });
+        }
+
+        await Inventory.updateInventoryItem(id, data);
+        res.status(200).json({ message: 'Item updated successfully' });
+    } catch (error) {
+        console.error('Error updating item:', error);
+        res.status(500).json({ 
+            error: 'Internal Server Error',
+            details: error.message 
+        });
     }
 };

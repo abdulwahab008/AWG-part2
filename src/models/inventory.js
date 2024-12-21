@@ -2,47 +2,70 @@
 
 const pool = require('./db');
 
-async function fetchProductNames() {
+async function fetchCategoryNames() {
     try {
         const connection = await pool.getConnection();
-        const [rows] = await connection.query('SELECT productName FROM products');
+        const [rows] = await connection.query('SELECT DISTINCT categoryName FROM products WHERE categoryName IS NOT NULL ORDER BY categoryName');
         connection.release();
-        const productNames = rows.map(row => row.productName);
-        return productNames;
+        
+        return rows.map(row => ({
+            name: row.categoryName
+        }));
     } catch (error) {
-        console.error('Error fetching product names:', error);
+        console.error('Error fetching category names:', error);
         throw error;
     }
 }
 
-async function saveToDatabase(data) {
+async function fetchProductsByCategory(categoryName) {
     try {
         const connection = await pool.getConnection();
+        const [rows] = await connection.query(
+            'SELECT productName, sku, price, cost FROM products WHERE categoryName = ? ORDER BY productName',
+            [categoryName]
+        );
+        connection.release();
+        
+        return rows;
+    } catch (error) {
+        console.error('Error fetching products by category:', error);
+        throw error;
+    }
+}
+async function saveToDatabase(data) {
+    let connection;
+
+    try {
+        connection = await pool.getConnection();
 
         for (const row of data) {
             try {
-                await connection.query('INSERT INTO inventory (date, product_name, supplier_name, price,cost, quantity, total) VALUES (?, ?, ?, ?, ?, ?, ?)', [
-                    row.date,
-                    row.productName, 
-                    row.supplierName, 
-                    row.price,
-                    row.cost,
-                    row.quantity,
-                    row.total
-                ]);
+                await connection.query(
+                    'INSERT INTO inventory (date, category_name, product_name, supplier_name, sku, price, cost, quantity, total) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+                    [
+                        row.date,
+                        row.categoryName,
+                        row.productName, 
+                        row.supplierName,
+                        row.sku,
+                        row.price,
+                        row.cost,
+                        row.quantity,
+                        row.total
+                    ]
+                );
             } catch (sqlError) {
                 console.error('SQL Error:', sqlError);
-                throw sqlError;
+                throw sqlError; 
             }
         }
-
-        connection.release();
     } catch (error) {
-        console.error('Error saving to database:', error);
-        throw error;
+        console.error('Error saving data to the database:', error);
+        throw error; 
+    } finally {
+        if (connection) connection.release();
     }
 }
-
 
 
 async function fetchSupplierNames() {
@@ -61,15 +84,30 @@ async function fetchSupplierNames() {
 }
 
 async function fetchInventoryData() {
+    const connection = await pool.getConnection();
     try {
-        const connection = await pool.getConnection();
-        const [rows] = await connection.query('SELECT * FROM inventory');
-        connection.release();
-
+        const [rows] = await connection.query(`
+            SELECT 
+                id,
+                DATE_FORMAT(date, '%Y-%m-%d') as date,
+                category_name,
+                product_name,
+                supplier_name,
+                price,
+                cost,
+                quantity,
+                total
+            FROM inventory
+            ORDER BY date DESC
+        `);
+        
+    
         return rows.map(row => ({
+            id: row.id,
             date: row.date,
-            productName: row.product_name, 
-            supplierName: row.supplier_name, 
+            categoryName: row.category_name,
+            productName: row.product_name,    
+            supplierName: row.supplier_name,  
             price: row.price,
             cost: row.cost,
             quantity: row.quantity,
@@ -78,6 +116,8 @@ async function fetchInventoryData() {
     } catch (error) {
         console.error('Error fetching inventory data:', error);
         throw error;
+    } finally {
+        connection.release();
     }
 }
 
@@ -98,17 +138,15 @@ async function getStockReport(dateRange) {
         const connection = await pool.getConnection();
 
         try {
-            // Update inventory quantity after the sale
+         
             await connection.query('UPDATE inventory SET quantity = quantity - ? WHERE product_name = ?', [
                 soldQuantity,
                 productName
             ]);
-
-            // Fetch the updated inventory data
             const [updatedRows] = await connection.query('SELECT * FROM inventory WHERE product_name = ?', [productName]);
             const updatedInventoryItem = updatedRows[0];
 
-            // Log the updated inventory data (optional)
+
             console.log('Updated Inventory Data:', updatedInventoryItem);
         } catch (sqlError) {
             console.error('SQL Error:', sqlError);
@@ -122,11 +160,87 @@ async function getStockReport(dateRange) {
     }
 }
 
+async function deleteInventoryItemById(id) {
+    if (!id || isNaN(Number(id))) {
+        throw new Error('Invalid ID provided');
+    }
+
+    const connection = await pool.getConnection();
+    try {
+        const [result] = await connection.query('DELETE FROM inventory WHERE id = ?', [Number(id)]);
+        if (result.affectedRows === 0) {
+            throw new Error('Item not found');
+        }
+        return result;
+    } catch (error) {
+        console.error('SQL Error:', error);
+        throw error;
+    } finally {
+        connection.release();
+    }
+}
+async function updateInventoryItem(id, data) {
+    if (!id || isNaN(Number(id))) {
+        throw new Error('Invalid ID provided');
+    }
+
+
+    if (!data.sku) {
+        throw new Error('SKU cannot be null or empty');
+    }
+
+    const connection = await pool.getConnection();
+    try {
+
+        console.log('Updating inventory with data:', data);
+
+        const [result] = await connection.query(
+            `UPDATE inventory 
+            SET date = ?,
+                category_name = ?,
+                product_name = ?,
+                supplier_name = ?,
+                sku = ?,
+                price = ?,
+                cost = ?,
+                quantity = ?,
+                total = ?
+            WHERE id = ?`,
+            [
+                data.date,
+                data.categoryName,
+                data.productName,
+                data.supplierName,
+                data.sku,
+                data.price,
+                data.cost,
+                data.quantity,
+                data.total,
+                Number(id)
+            ]
+        );
+
+        if (result.affectedRows === 0) {
+            throw new Error('Item not found');
+        }
+        return result;
+    } catch (error) {
+        console.error('SQL Error:', error);
+        throw error;
+    } finally {
+        connection.release();
+    }
+}
+
 module.exports = {
-    fetchProductNames,
+    fetchCategoryNames,
+   
     saveToDatabase,
     fetchSupplierNames,
     fetchInventoryData,
     getStockReport,
     updateInventoryQuantity,
+    deleteInventoryItemById,
+    updateInventoryItem,
+    fetchProductsByCategory
 };
